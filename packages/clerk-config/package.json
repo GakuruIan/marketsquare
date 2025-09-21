@@ -1,0 +1,12 @@
+{
+  "name": "@marketsquare/clerk-config",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "type": "module",
+  "dependencies": {
+    "@clerk/nextjs": "^6.32.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20"
+  }
+}

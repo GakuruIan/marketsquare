@@ -1,31 +1,19 @@
-# shadcn/ui monorepo template
+# Marketsquare Monorepo
 
-This template is for creating a monorepo with shadcn/ui.
+This repository is a **Turborepo** monorepo that contains multiple applications and shared packages.  
+It is part of a learning journey into **microservices architecture**, with a backend powered by **NestJS**.
 
-## Usage
+## Project Overview
 
-```bash
-pnpm dlx shadcn@latest init
-```
+The goal of this project is to build a scalable **e-commerce platform** with shared UI components, modular architecture, and authentication via **Clerk**.  
+It also serves as a playground to explore **monorepo setups**, **microservices**, and **frontend-backend separation**.
 
-## Adding components
+## Tech Stack
 
-To add components to your app, run the following command at the root of your `web` app:
-
-```bash
-pnpm dlx shadcn@latest add button -c apps/web
-```
-
-This will place the ui components in the `packages/ui/src/components` directory.
-
-## Tailwind
-
-Your `tailwind.config.ts` and `globals.css` are already set up to use the components from the `ui` package.
-
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button"
-```
+- **Frontend:** Next.js (App Router) + TailwindCSS + Shadcn/UI  
+- **Backend:** NestJS (learning microservices patterns)  
+- **Monorepo Tooling:** Turborepo + PNPM workspaces  
+- **Auth:** Clerk  
+- **Database:** PostgreSQL with Prisma  
+- **UI Library:** Shared `ui` package with reusable React components  
+- **Form Handling:** React Hook Form + Zod  

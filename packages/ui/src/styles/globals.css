@@ -5,7 +5,12 @@
 
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
+
+@theme inline{
+  --font-poppins: var(--font-poppins);
+  --font-montserrat: var(--font-Montserrat);
+}
 
 :root {
   --background: oklch(1 0 0);
@@ -122,6 +127,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background dark:bg-neutral-900 dark:text-white text-foreground font-poppins;
+  }
+  h1,h2,h3,h4,h5,h6{
+    @apply font-montserrat 
   }
 }
