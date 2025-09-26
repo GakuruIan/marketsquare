@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 // signin form
 import SignInForm from "@workspace/ui/components/forms/SignIn";
@@ -13,9 +13,12 @@ const page = () => {
   return (
     <div className="flex items-center justify-center h-screen w-full">
       <SignInForm
-        userRole="customer"
+        userRole="CUSTOMER"
         onSignUpClick={() => {
           router.push("/register");
+        }}
+        onSuccess={() => {
+          router.replace("/storefront");
         }}
         onForgotPassword={() => {
           router.push("/forgot-password");

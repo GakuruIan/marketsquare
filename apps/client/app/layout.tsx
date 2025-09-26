@@ -5,6 +5,8 @@ import { Montserrat, Poppins } from "next/font/google";
 import "@workspace/ui/globals.css";
 import { Providers } from "@/components/providers";
 
+import { Toaster } from "@workspace/ui/components/sonner";
+
 // clerk config
 import { ClerkProviderWrapper } from "@marketsquare/clerk-config";
 
@@ -36,6 +38,7 @@ export default function RootLayout({
           className={`${fontPoppin.variable} ${fontMontserrat.variable} font-sans antialiased `}
         >
           <Providers>{children}</Providers>
+          <Toaster />
         </body>
       </html>
     </ClerkProviderWrapper>

@@ -6,6 +6,7 @@ import { UserRole } from "./types";
 
 interface ForgotPasswordProps {
   userRole: UserRole;
+  onSuccess?: (redirectUrl: string) => void;
 }
 
 // form utils
@@ -44,7 +45,10 @@ const emailSchema = z.object({
     .min(1, "Email is required."),
 });
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userRole }) => {
+const ForgotPassword: React.FC<ForgotPasswordProps> = ({
+  userRole,
+  onSuccess,
+}) => {
   const [showOTP, setShowOTP] = useState(false);
 
   const { isLoaded: isSigninLoaded, signIn } = useSignIn();
@@ -56,7 +60,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userRole }) => {
   useEffect(() => {
     if (isSignedIn) {
       switch (userRole) {
-        case "customer":
+        case "CUSTOMER":
           break;
 
         default:
@@ -105,7 +109,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ userRole }) => {
   const isSubmitting = form.formState.isSubmitting;
 
   if (showOTP) {
-    return <PasswordOTP userRole={userRole} />;
+    return <PasswordOTP userRole={userRole} onSuccess={onSuccess} />;
   }
 
   if (!isLoaded) {

@@ -122,6 +122,7 @@ const ForgotPasswordOtp: React.FC<ForgotFormProps> = ({
         }
       })
       .catch((error) => {
+        console.log(error);
         if (error?.errors[0]?.code === "verification_expired") {
           setShowResendBtn(true);
           return toast("Vefication code Expired", {
@@ -141,7 +142,16 @@ const ForgotPasswordOtp: React.FC<ForgotFormProps> = ({
 
   return (
     <div className="w-full max-w-md">
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col">
+        <div className="text-left mb-6">
+          <h2 className="text-2xl font-medium tracking-normal">
+            Password Reset
+          </h2>
+          <p className="text-muted-foreground mt-2">
+            Enter the OTP sent to your email or phone
+          </p>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleVerification)}>
             <div className="flex flex-col gap-6">
@@ -262,7 +272,7 @@ const ForgotPasswordOtp: React.FC<ForgotFormProps> = ({
             </div>
           </form>
         </Form>
-        <div className="">
+        <div className="mt-6">
           {showResendBtn && (
             <div className="flex items-center justify-center gap-x-1 dark:text-neutral-300 text-muted-foreground *:[a]:hover:text-primary *:[a]:dark:hover:text-gray-300 text-center text-sm text-balance *:[a]:underline *:[a]:underline-offset-4">
               <p>Didn&apos;t get the code ? </p>

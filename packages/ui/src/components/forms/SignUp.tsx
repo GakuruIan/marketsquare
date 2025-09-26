@@ -23,17 +23,23 @@ import {
 import { Input } from "@workspace/ui/components/input";
 
 import { Button } from "@workspace/ui/components/button";
-import Loader from "../loaders/Loader";
 
+// loaders
+import Loader from "../loaders/Loader";
 import Spinner from "../loaders/Spinner";
+
+import Verification from "./Verifications/Verification";
 
 // clerk
 import { useSignUp, useUser } from "@marketsquare/clerk-config";
 
-type UserRole = "customer" | "vendor";
+type UserRole = "CUSTOMER" | "VENDOR";
+
+type AppOrigin = "CLIENT" | "VENDOR";
 
 interface SignUpFormProps {
   userRole: UserRole;
+  appOrigin: AppOrigin;
   onSuccess?: (redirectUrl: string) => void;
   onSignInClick?: () => void;
 }
@@ -52,9 +58,9 @@ interface AppConfig {
 }
 
 const APP_CONFIGS: Record<UserRole, AppConfig> = {
-  customer: {
+  CUSTOMER: {
     name: "Storefront",
-    role: "customer",
+    role: "CUSTOMER",
     redirects: {
       afterSignUp: "/store",
       signUpUrl: "/register",
@@ -64,9 +70,9 @@ const APP_CONFIGS: Record<UserRole, AppConfig> = {
       subtitle: "Join our store community",
     },
   },
-  vendor: {
+  VENDOR: {
     name: "Vendor Dashboard",
-    role: "vendor",
+    role: "VENDOR",
     redirects: {
       afterSignUp: "/vendor-dashboard",
       signUpUrl: "/vendor-register",
@@ -117,21 +123,22 @@ const loginSchema = z
 
 const SignUpForm: React.FC<SignUpFormProps> = ({
   userRole,
+  appOrigin = "CLIENT",
   onSuccess,
   onSignInClick,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [verifing, setVerifing] = useState(false);
 
-  const { isLoaded: isSignLoaded, signUp, setActive } = useSignUp();
+  const { isLoaded: isSignUpLoaded, signUp, setActive } = useSignUp();
   const { isLoaded: isUserLoaded, isSignedIn, user } = useUser();
 
-  const isLoaded = isSignLoaded && isUserLoaded;
+  const isLoaded = isSignUpLoaded && isUserLoaded;
   const appConfig = APP_CONFIGS[userRole];
 
   useEffect(() => {
     if (isSignedIn && user) {
-      const userRole = user.publicMetadata?.role as UserRole;
+      const userRole = user.unsafeMetadata?.role as UserRole;
 
       if (userRole) {
         const targetConfig = APP_CONFIGS[userRole];
@@ -156,8 +163,12 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
     return <Loader />;
   }
 
+  if (isSignedIn) {
+    return <Loader />;
+  }
+
   if (verifing) {
-    return <></>;
+    return <Verification userRole={userRole} />;
   }
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
@@ -170,6 +181,10 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
             username,
             emailAddress: email,
             password,
+            unsafeMetadata: {
+              role: userRole,
+              appOrigin,
+            },
           });
 
           await signUp.prepareEmailAddressVerification({
@@ -268,7 +283,8 @@ const SignUpForm: React.FC<SignUpFormProps> = ({
                     />
                   </FormControl>
                   <FormDescription className="flex items-center justify-between">
-                    Enter the email you used to sign up.
+                    Use a valid email address — we’ll send you a verification
+                    code.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

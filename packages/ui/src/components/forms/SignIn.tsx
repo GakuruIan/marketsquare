@@ -30,7 +30,7 @@ import Spinner from "../loaders/Spinner";
 // clerk
 import { useSignIn, useUser } from "@marketsquare/clerk-config";
 
-type UserRole = "customer" | "vendor" | "admin";
+type UserRole = "CUSTOMER" | "VENDOR" | "ADMIN" | "EMPLOYEE";
 
 interface SignInFormProps {
   userRole: UserRole;
@@ -53,9 +53,9 @@ interface AppConfig {
 }
 
 const APP_CONFIGS: Record<UserRole, AppConfig> = {
-  customer: {
+  CUSTOMER: {
     name: "Storefront",
-    role: "customer",
+    role: "CUSTOMER",
     redirects: {
       afterSignIn: "/store",
       signUpUrl: "/register",
@@ -65,9 +65,9 @@ const APP_CONFIGS: Record<UserRole, AppConfig> = {
       subtitle: "Access our storefront",
     },
   },
-  vendor: {
+  VENDOR: {
     name: "Vendor Dashboard",
-    role: "vendor",
+    role: "VENDOR",
     redirects: {
       afterSignIn: "/vendor-dashboard",
       signUpUrl: "/vendor-register",
@@ -77,9 +77,21 @@ const APP_CONFIGS: Record<UserRole, AppConfig> = {
       subtitle: "Manage your store",
     },
   },
-  admin: {
+  EMPLOYEE: {
+    name: "Vendor Dashboard",
+    role: "VENDOR",
+    redirects: {
+      afterSignIn: "/vendor-dashboard",
+      signUpUrl: "/vendor-register",
+    },
+    branding: {
+      title: "Vendor Sign In",
+      subtitle: "Manage your store",
+    },
+  },
+  ADMIN: {
     name: "Admin Panel",
-    role: "admin",
+    role: "ADMIN",
     redirects: {
       afterSignIn: "/admin",
     },
@@ -126,7 +138,9 @@ const SignInForm: React.FC<SignInFormProps> = ({
 
   useEffect(() => {
     if (isSignedIn && user) {
-      const userRole = user.publicMetadata?.role as UserRole;
+      const userRole = user.unsafeMetadata?.role as UserRole;
+
+      console.log(userRole);
 
       if (userRole) {
         const targetConfig = APP_CONFIGS[userRole];
@@ -146,6 +160,10 @@ const SignInForm: React.FC<SignInFormProps> = ({
   });
 
   if (!isLoaded) {
+    return <Loader />;
+  }
+
+  if (isSignedIn) {
     return <Loader />;
   }
 
@@ -326,7 +344,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
         </Link>
       </div> */}
 
-      {userRole !== "admin" &&
+      {userRole !== "ADMIN" &&
         appConfig.redirects.signUpUrl &&
         onSignUpClick && (
           <div className="text-muted-foreground text-center text-sm text-balance mt-8">
@@ -341,7 +359,7 @@ const SignInForm: React.FC<SignInFormProps> = ({
         )}
 
       {/* Admin-specific message */}
-      {userRole === "admin" && (
+      {userRole === "ADMIN" && (
         <div className="text-muted-foreground text-center text-sm text-balance mt-8">
           <p className="text-xs">
             Admin access only. Contact your system administrator if you need an

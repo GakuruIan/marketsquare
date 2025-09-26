@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-type UserRole = "customer" | "vendor";
+type UserRole = "CUSTOMER" | "VENDOR";
 
 // clerk
 import { useSignUp } from "@marketsquare/clerk-config";
@@ -95,10 +95,11 @@ const Verification: React.FC<VerificationFormProps> = ({
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
 
-        if (userRole === "customer") {
+        if (userRole === "CUSTOMER") {
+          console.log("customer");
           onSuccess?.("/storefront");
-        } else if (userRole === "vendor") {
-          onSuccess?.("/dashboard");
+        } else if (userRole === "VENDOR") {
+          onSuccess?.("/onboarding");
         }
 
         // toaster
@@ -112,6 +113,7 @@ const Verification: React.FC<VerificationFormProps> = ({
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (error: unknown) {
+      console.log(error);
       if (error?.errors[0]?.code === "verification_expired") {
         setShowResendBtn(true);
         return toast("Vefication code Expired", {

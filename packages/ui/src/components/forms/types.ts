@@ -1,4 +1,4 @@
-export type UserRole = "customer" | "vendor" | "admin";
+export type UserRole = "CUSTOMER" | "VENDOR" | "ADMIN";
 
 export interface AppConfig {
   name: string;
@@ -14,9 +14,9 @@ export interface AppConfig {
 }
 
 export const APP_CONFIGS: Record<UserRole, AppConfig> = {
-  customer: {
+  CUSTOMER: {
     name: "Storefront",
-    role: "customer",
+    role: "CUSTOMER",
     redirects: {
       afterSignIn: "/store",
       signUpUrl: "/register",
@@ -26,9 +26,9 @@ export const APP_CONFIGS: Record<UserRole, AppConfig> = {
       subtitle: "Access our storefront",
     },
   },
-  vendor: {
+  VENDOR: {
     name: "Vendor Dashboard",
-    role: "vendor",
+    role: "VENDOR",
     redirects: {
       afterSignIn: "/vendor-dashboard",
       signUpUrl: "/vendor-register",
@@ -38,9 +38,9 @@ export const APP_CONFIGS: Record<UserRole, AppConfig> = {
       subtitle: "Manage your store",
     },
   },
-  admin: {
+  ADMIN: {
     name: "Admin Panel",
-    role: "admin",
+    role: "ADMIN",
     redirects: {
       afterSignIn: "/admin",
     },

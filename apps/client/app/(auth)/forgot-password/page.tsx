@@ -11,7 +11,12 @@ const page = () => {
   const router = useRouter();
   return (
     <div className="flex items-center justify-center h-screen w-full">
-      <ForgotPassword userRole="customer" />
+      <ForgotPassword
+        userRole="CUSTOMER"
+        onSuccess={() => {
+          router.replace("/storefront");
+        }}
+      />
     </div>
   );
 };

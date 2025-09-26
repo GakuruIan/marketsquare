@@ -1,9 +1,9 @@
-import React from "react";
+import Spinner from "./Spinner";
 
 const Loader = () => {
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-72px)]">
-      <div className="loader" />
+      <Spinner size="sm" />
     </div>
   );
 };

@@ -12,7 +12,8 @@ const page = () => {
   return (
     <div className="flex items-center justify-center h-screen w-full">
       <SignUpForm
-        userRole="customer"
+        appOrigin="CLIENT"
+        userRole="CUSTOMER"
         onSignInClick={() => {
           router.push("/login");
         }}
