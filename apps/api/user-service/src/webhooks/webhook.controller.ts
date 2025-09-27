@@ -68,6 +68,13 @@ export class WebhookController {
       case 'user.created':
         await this.webhookservice.handleCreateUser(event.data);
         break;
+
+      case 'user.updated':
+        await this.webhookservice.handleUpdateUser(event.data);
+        break;
+      case 'user.deleted':
+        await this.webhookservice.handleDeleteUser(event.data);
+        break;
     }
   }
 }
