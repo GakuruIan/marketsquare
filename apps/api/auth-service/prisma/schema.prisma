@@ -1,0 +1,170 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ROLE {
+  SUPER_ADMIN
+  CUSTOMER
+  VENDOR
+  VENDOR_EMPLOYEE
+  ADMIN_EMPLOYEE
+}
+
+enum AccountStatus {
+  PENDING_VERIFICATION
+  ACTIVE
+  SUSPENDED
+  DEACTIVATED
+}
+
+model Auth {
+  id       String  @id @default(uuid())
+  email    String  @unique()
+  password String
+  username String  @unique()
+  verified Boolean @default(false)
+
+  userId String?       @unique // link to user profile in user service
+  status AccountStatus @default(PENDING_VERIFICATION)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  verifiedAt DateTime?
+
+  // security fields
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
+  lastLoginAt        DateTime?
+  refreshToken       String?            @unique()
+  sessions           Session[]
+  verificationCodes  VerificationCode[]
+  invitationsSent    Invitation[]       @relation("InvitedBy")
+  invitationReceived Invitation?        @relation("InvitedUser")
+  invitationId       String?
+  userPermissions    UserPermission[]
+
+  @@index([email])
+  @@index([username])
+  @@index([userId])
+}
+
+model Session {
+  id           String  @id @default(uuid())
+  authId       String
+  token        String? @unique
+  refreshToken String? @unique
+
+  userAgent  String?
+  ipAddress  String?
+  deviceName String?
+
+  expiresAt    DateTime
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  auth Auth @relation(fields: [authId], references: [id], onDelete: Cascade)
+
+  @@index([authId])
+  @@index([token])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model VerificationCode {
+  id        String    @id @default(uuid())
+  authId    String
+  code      String    @unique
+  type      CodeType
+  expiresAt DateTime
+  used      Boolean   @default(false)
+  usedAt    DateTime?
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+  auth      Auth     @relation(fields: [authId], references: [id], onDelete: Cascade)
+
+  @@index([code])
+  @@index([authId])
+  @@index([expiresAt])
+}
+
+enum CodeType {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
+model Invitation {
+  id             String @id @default(uuid())
+  token          String @unique
+  email          String
+  role           ROLE
+  organizationId String
+
+  invitedById   String
+  invitedUserId String?   @unique // user created from the invite
+  expiresAt     DateTime // 1i5 mins
+  acceptedAt    DateTime?
+  revokedAt     DateTime?
+
+  metadate Json?
+
+  createdAt DateTime @default(now())
+
+  invitedBy   Auth  @relation("InvitedBy", fields: [invitedById], references: [id], onDelete: Cascade)
+  invitedUser Auth? @relation("InvitedUser", fields: [invitedUserId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([email])
+  @@index([invitedById])
+  @@index([expiresAt])
+  @@index([organizationId])
+}
+
+model Permission {
+  id       String @id @default(uuid())
+  action   String // write,read,update,delete
+  resource String
+
+  description String?
+
+  scope           PermissionScope  @default(ORGANIZATION)
+  createdAt       DateTime         @default(now())
+  userPermissions UserPermission[]
+
+  @@unique([resource, action])
+  @@index([resource])
+}
+
+enum PermissionScope {
+  PLATFORM
+  ORGANIZATION
+}
+
+model UserPermission {
+  id           String @id @default(uuid())
+  userId       String
+  permissionId String
+
+  grantedBy String
+  grantedAt DateTime @default(now())
+
+  user       Auth       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, permissionId])
+  @@index([userId])
+}
