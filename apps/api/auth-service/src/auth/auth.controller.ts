@@ -106,6 +106,7 @@ export class AuthController {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 1 * 60 * 60 * 1000,
+       path: '/',
     });
 
     res.cookie('refresh_token', refreshToken, {

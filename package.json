@@ -2,9 +2,10 @@
   "name": "marketsquare",
   "version": "0.0.1",
   "private": true,
+  "author": "Gakuru",
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
+    "dev": "turbo run dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -18,5 +19,8 @@
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3"
   }
 }
